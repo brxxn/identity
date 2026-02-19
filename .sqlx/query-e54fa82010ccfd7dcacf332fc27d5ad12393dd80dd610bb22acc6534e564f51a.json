@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE user_sessions SET refresh_hash = $1 WHERE session_id = $2\n      ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e54fa82010ccfd7dcacf332fc27d5ad12393dd80dd610bb22acc6534e564f51a"
+}

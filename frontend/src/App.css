@@ -1,0 +1,17 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10vh;
+}
+
+.login-content {
+  width: 400px;
+  max-width: 90vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  
+}
+

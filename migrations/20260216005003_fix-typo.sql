@@ -1,0 +1,1 @@
+ALTER TABLE clients RENAME COLUMN app_desciption TO app_description;

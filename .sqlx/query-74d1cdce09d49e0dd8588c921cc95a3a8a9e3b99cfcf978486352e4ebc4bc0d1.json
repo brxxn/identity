@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO permission_group_membership(group_id, user_id) VALUES ($1, $2)\n      ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "74d1cdce09d49e0dd8588c921cc95a3a8a9e3b99cfcf978486352e4ebc4bc0d1"
+}

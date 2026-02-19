@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE clients SET client_secret=$1, app_name=$2, app_description=$3, redirect_uris=$4, is_managed=$5, is_disabled=$6, default_allowed=$7, allow_implicit_flow=$8, allow_explicit_flow=$9\n        WHERE client_id=$10\n      ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "TextArray",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "380f5bb61740cf4e439de64bad3cf483733589fb11a51bd1e82863f7cc5674d3"
+}

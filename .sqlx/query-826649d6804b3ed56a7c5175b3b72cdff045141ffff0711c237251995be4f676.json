@@ -1,0 +1,47 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n          user_id, client_id, sub, last_used, revoked\n        FROM user_app_authorizations WHERE user_id = $1 AND client_id = $2\n      ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "client_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "sub",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "last_used",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "revoked",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "826649d6804b3ed56a7c5175b3b72cdff045141ffff0711c237251995be4f676"
+}

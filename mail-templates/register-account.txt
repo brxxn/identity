@@ -1,0 +1,14 @@
+Hi {{name}} ({{username}}),
+
+You have been invited to setup an account on {{origin}} registered to your email {{email}}.
+
+To sign up, you will need to create a passkey for your account. Passkeys are usually stored by a password manager or on your device (iCloud Keychain/Apple Passwords, Google Passwords, Bitwarden, etc.) and allow you to authenticate more securely than with a password across all of your devices.
+
+To set up your account, open the link below on a device signed into iCloud, a Google account, or a third-party password manager:
+
+{{registration_link}}
+
+Please note that this link expires after 24 hours. You can ask an administrator of {{origin}} to send you another link.
+
+---
+You are receiving this email because an administrator requested to send you a setup link. Please do not reply to this email, as this inbox is not monitored.

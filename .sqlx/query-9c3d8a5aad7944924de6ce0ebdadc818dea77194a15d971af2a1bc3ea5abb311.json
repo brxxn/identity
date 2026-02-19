@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        DELETE FROM user_app_role_override WHERE user_id = $1 AND client_id = $2 AND role = $3\n      ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "9c3d8a5aad7944924de6ce0ebdadc818dea77194a15d971af2a1bc3ea5abb311"
+}

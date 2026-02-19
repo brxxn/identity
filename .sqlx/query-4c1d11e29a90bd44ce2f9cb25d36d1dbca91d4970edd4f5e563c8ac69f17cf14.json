@@ -1,0 +1,76 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n          client_id, client_secret, app_name, app_description, redirect_uris, is_managed, is_disabled, default_allowed, allow_explicit_flow, allow_implicit_flow\n        FROM clients WHERE client_id = $1\n      ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "client_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "client_secret",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "app_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "app_description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "redirect_uris",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 5,
+        "name": "is_managed",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "is_disabled",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "default_allowed",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 8,
+        "name": "allow_explicit_flow",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 9,
+        "name": "allow_implicit_flow",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "4c1d11e29a90bd44ce2f9cb25d36d1dbca91d4970edd4f5e563c8ac69f17cf14"
+}

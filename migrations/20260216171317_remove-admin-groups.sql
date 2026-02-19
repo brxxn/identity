@@ -1,0 +1,1 @@
+ALTER TABLE permission_groups DROP COLUMN is_admin_group;

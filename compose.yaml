@@ -1,0 +1,47 @@
+services:
+  valkey:
+    image: valkey/valkey:latest
+    networks:
+      - backend
+    volumes:
+      - ./env/valkey:/data
+  postgres:
+    image: postgres:18.1-alpine
+    restart: unless-stopped
+    # TODO: find a better shared memory size limit
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - backend
+    volumes:
+      - ./env/postgres:/var/lib/postgresql/18/docker
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel run
+    profiles: ["cloudflare"]
+    networks:
+      - backend
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: postgres
+      KEYS_DIR: /keys
+      FRONTEND_DIR: /frontend/dist
+      REDIS_URL: redis://valkey:6379/
+    env_file:
+      - .env
+    networks:
+      - backend
+    volumes:
+      - ./keys:/keys
+      - ./frontend:/frontend:ro
+  
+networks:
+  backend:

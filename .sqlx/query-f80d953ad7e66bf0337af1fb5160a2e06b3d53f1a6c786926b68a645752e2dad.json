@@ -1,0 +1,25 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO permission_groups(slug, name, description, is_managed) VALUES \n          ($1, $2, $3, $4) RETURNING id\n      ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "f80d953ad7e66bf0337af1fb5160a2e06b3d53f1a6c786926b68a645752e2dad"
+}

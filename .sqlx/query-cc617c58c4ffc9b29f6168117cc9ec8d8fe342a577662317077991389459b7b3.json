@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO user_app_role_override(user_id, client_id, role, granted) VALUES ($1, $2, $3, $4)\n        ON CONFLICT (user_id, client_id, role) DO UPDATE SET granted = EXCLUDED.granted\n      ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text",
+        "Text",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "cc617c58c4ffc9b29f6168117cc9ec8d8fe342a577662317077991389459b7b3"
+}

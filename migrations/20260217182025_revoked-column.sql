@@ -1,0 +1,1 @@
+ALTER TABLE user_app_authorizations ADD COLUMN revoked BOOLEAN NOT NULL DEFAULT FALSE;

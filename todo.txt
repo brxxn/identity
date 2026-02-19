@@ -1,0 +1,9 @@
+- permission routes
+
+- custom claims support
+- oauth access/refresh tokens + id tokens
+- redis?
+
+- username/email validation on the user object
+- group slug validation
+- maybe length limits for everything idk

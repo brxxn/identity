@@ -1,0 +1,27 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO users(email, username, name, is_suspended, credential_uuid, is_admin) VALUES \n          ($1, $2, $3, $4, $5, $6) RETURNING id\n      ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Bool",
+        "Uuid",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "9cd7e4108980fcd1f12b1613f55ad6d0ffd340f9dbc3252c3d34ea8711260d71"
+}

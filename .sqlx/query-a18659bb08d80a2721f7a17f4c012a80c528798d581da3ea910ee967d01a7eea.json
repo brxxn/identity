@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n          session_id, user_id, refresh_hash, webauthn_id\n        FROM user_sessions WHERE user_id = $1\n      ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "session_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "refresh_hash",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "webauthn_id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "a18659bb08d80a2721f7a17f4c012a80c528798d581da3ea910ee967d01a7eea"
+}

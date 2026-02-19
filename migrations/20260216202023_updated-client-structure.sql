@@ -1,0 +1,4 @@
+ALTER TABLE clients DROP COLUMN grant_types;
+
+ALTER TABLE clients ADD COLUMN allow_explicit_flow BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE clients ADD COLUMN allow_implicit_flow BOOLEAN NOT NULL DEFAULT FALSE;

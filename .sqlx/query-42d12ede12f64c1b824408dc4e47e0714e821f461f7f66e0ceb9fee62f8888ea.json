@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO group_app_permission_override(group_id, client_id, granted, override_priority) VALUES ($1, $2, $3, $4)\n        ON CONFLICT (group_id, client_id) DO UPDATE SET granted = EXCLUDED.granted, override_priority = EXCLUDED.override_priority\n      ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text",
+        "Bool",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "42d12ede12f64c1b824408dc4e47e0714e821f461f7f66e0ceb9fee62f8888ea"
+}

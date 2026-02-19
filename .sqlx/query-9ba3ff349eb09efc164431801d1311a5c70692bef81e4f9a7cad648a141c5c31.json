@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT group_id, client_id, granted, override_priority FROM group_app_permission_override WHERE client_id = $1\n        ORDER BY override_priority ASC\n      ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "group_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "client_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "granted",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "override_priority",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "9ba3ff349eb09efc164431801d1311a5c70692bef81e4f9a7cad648a141c5c31"
+}

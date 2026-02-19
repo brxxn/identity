@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO clients(client_id, client_secret, app_name, app_description, redirect_uris, is_managed, is_disabled, default_allowed, allow_explicit_flow, allow_implicit_flow) VALUES \n          ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)\n      ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "TextArray",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "3d68e239f6f4905eda60b3cb84a547b8dd8d40118105ecb34d58f205d3814b12"
+}

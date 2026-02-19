@@ -1,0 +1,50 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO user_app_authorizations(user_id, client_id, sub, last_used, revoked) VALUES ($1, $2, $3, $4, $5)\n        ON CONFLICT (user_id, client_id) DO UPDATE SET last_used = EXCLUDED.last_used, revoked = EXCLUDED.revoked\n        RETURNING *\n      ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "client_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "sub",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "last_used",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "revoked",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text",
+        "Text",
+        "Int8",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "7089e4b071022a1cbb49fd054d9225ef43b7e30655bfd74e893c07a5729a24db"
+}
