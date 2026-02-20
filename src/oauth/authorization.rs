@@ -43,7 +43,11 @@ impl UserAppAuthorization {
     Ok(())
   }
 
-  pub async fn revoke_app_authorization(pool: &PgPool, user_id: i32, client_id: String) -> Result<(), Box<dyn Error>> {
+  pub async fn revoke_app_authorization(
+    pool: &PgPool,
+    user_id: i32,
+    client_id: String,
+  ) -> Result<(), Box<dyn Error>> {
     sqlx::query!(
       r#"
         UPDATE user_app_authorizations SET revoked = TRUE WHERE user_id = $1 AND client_id = $2
@@ -56,7 +60,10 @@ impl UserAppAuthorization {
     Ok(())
   }
 
-  pub async fn get_authorizations_for_user(pool: &PgPool, user_id: i32) -> Result<Vec<UserAppAuthorization>, Box<dyn Error>> {
+  pub async fn get_authorizations_for_user(
+    pool: &PgPool,
+    user_id: i32,
+  ) -> Result<Vec<UserAppAuthorization>, Box<dyn Error>> {
     let authorizations = sqlx::query_as!(
       UserAppAuthorization,
       r#"
@@ -71,7 +78,11 @@ impl UserAppAuthorization {
     Ok(authorizations)
   }
 
-  pub async fn get_authorization(pool: &PgPool, user_id: i32, client_id: String) -> Result<UserAppAuthorization, Box<dyn Error>> {
+  pub async fn get_authorization(
+    pool: &PgPool,
+    user_id: i32,
+    client_id: String,
+  ) -> Result<UserAppAuthorization, Box<dyn Error>> {
     let authorizations = sqlx::query_as!(
       UserAppAuthorization,
       r#"

@@ -67,10 +67,7 @@ impl UserAppRoleOverride {
     Ok(role_overrides)
   }
 
-  pub async fn remove_override(
-    &self,
-    pool: &PgPool
-  )-> Result<(), Box<dyn Error>> {
+  pub async fn remove_override(&self, pool: &PgPool) -> Result<(), Box<dyn Error>> {
     sqlx::query!(
       r#"
         DELETE FROM user_app_role_override WHERE user_id = $1 AND client_id = $2 AND role = $3

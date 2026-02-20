@@ -6,7 +6,11 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
   AppState,
-  client::{IdentityClient, permissions::{GroupPermissionOverride, UserPermissionOverride}, roles::{GroupAppRoleOverride, UserAppRoleOverride}},
+  client::{
+    IdentityClient,
+    permissions::{GroupPermissionOverride, UserPermissionOverride},
+    roles::{GroupAppRoleOverride, UserAppRoleOverride},
+  },
   response::{ApiErr, ApiResponse, EmptyResponse},
   user::AdminCtx,
 };
@@ -39,34 +43,34 @@ pub struct GetClientDetailedResponse {
 
 #[derive(Deserialize)]
 pub struct UpdateGroupPermissionOverridesRequest {
-  pub group_permission_overrides: Vec<GroupPermissionOverride>
+  pub group_permission_overrides: Vec<GroupPermissionOverride>,
 }
 
 #[derive(Serialize)]
 pub struct UpdateGroupPermissionOverridesResponse {
   pub client: IdentityClient,
-  pub group_permission_overrides: Vec<GroupPermissionOverride>
+  pub group_permission_overrides: Vec<GroupPermissionOverride>,
 }
 
 #[derive(Deserialize)]
 pub struct UpdateGroupRoleOverridesRequest {
-  pub group_role_overrides: Vec<GroupAppRoleOverride>
+  pub group_role_overrides: Vec<GroupAppRoleOverride>,
 }
 
 #[derive(Serialize)]
 pub struct UpdateGroupRoleOverridesResponse {
   pub client: IdentityClient,
-  pub group_permission_overrides: Vec<GroupAppRoleOverride>
+  pub group_permission_overrides: Vec<GroupAppRoleOverride>,
 }
 
 #[derive(Deserialize)]
 pub struct UpdateUserPermissionOverrideRequest {
-  pub granted: bool
+  pub granted: bool,
 }
 
 #[derive(Deserialize)]
 pub struct UpdateUserRoleOverrideRequest {
-  pub granted: bool
+  pub granted: bool,
 }
 
 #[derive(Serialize)]
@@ -118,19 +122,29 @@ pub async fn get_client_detailed(
     return ApiResponse::Err(ApiErr::UnknownClient);
   };
 
-  let Ok(user_permission_overrides) = UserPermissionOverride::get_overrides_for_client(&state.pool, client_id.clone()).await else {
+  let Ok(user_permission_overrides) =
+    UserPermissionOverride::get_overrides_for_client(&state.pool, client_id.clone()).await
+  else {
     return ApiResponse::Err(ApiErr::InternalServerError);
   };
 
-  let Ok(group_permission_overrides) = GroupPermissionOverride::fetch_group_permissions_for_client(&state.pool, client_id.clone()).await else {
+  let Ok(group_permission_overrides) =
+    GroupPermissionOverride::fetch_group_permissions_for_client(&state.pool, client_id.clone())
+      .await
+  else {
     return ApiResponse::Err(ApiErr::InternalServerError);
   };
 
-  let Ok(user_role_overrides) = UserAppRoleOverride::get_overrides_for_client(&state.pool, client_id.clone()).await else {
+  let Ok(user_role_overrides) =
+    UserAppRoleOverride::get_overrides_for_client(&state.pool, client_id.clone()).await
+  else {
     return ApiResponse::Err(ApiErr::InternalServerError);
   };
 
-  let Ok(group_role_overrides) = GroupAppRoleOverride::fetch_group_role_overrides_for_client(&state.pool, client_id.clone()).await else {
+  let Ok(group_role_overrides) =
+    GroupAppRoleOverride::fetch_group_role_overrides_for_client(&state.pool, client_id.clone())
+      .await
+  else {
     return ApiResponse::Err(ApiErr::InternalServerError);
   };
 
@@ -139,7 +153,7 @@ pub async fn get_client_detailed(
     user_permission_overrides,
     group_permission_overrides,
     user_role_overrides,
-    group_role_overrides
+    group_role_overrides,
   })
 }
 
@@ -197,7 +211,7 @@ pub async fn update_group_permission_overrides(
   State(state): State<AppState>,
   _: AdminCtx,
   Path(client_id): Path<String>,
-  Json(payload): Json<UpdateGroupPermissionOverridesRequest>
+  Json(payload): Json<UpdateGroupPermissionOverridesRequest>,
 ) -> ApiResponse<UpdateGroupPermissionOverridesResponse> {
   let Ok(client) = IdentityClient::from_client_id(&state.pool, client_id).await else {
     return ApiResponse::Err(ApiErr::UnknownClient);
@@ -209,14 +223,16 @@ pub async fn update_group_permission_overrides(
   let Ok(_) = GroupPermissionOverride::set_group_overrides_for_client(
     &state.pool,
     &payload.group_permission_overrides,
-    client.client_id.clone()
-  ).await else {
+    client.client_id.clone(),
+  )
+  .await
+  else {
     return ApiResponse::Err(ApiErr::InternalServerError);
   };
 
-  ApiResponse::Ok(UpdateGroupPermissionOverridesResponse { 
+  ApiResponse::Ok(UpdateGroupPermissionOverridesResponse {
     client,
-    group_permission_overrides: payload.group_permission_overrides
+    group_permission_overrides: payload.group_permission_overrides,
   })
 }
 
@@ -224,7 +240,7 @@ pub async fn update_group_role_overrides(
   State(state): State<AppState>,
   _: AdminCtx,
   Path(client_id): Path<String>,
-  Json(payload): Json<UpdateGroupRoleOverridesRequest>
+  Json(payload): Json<UpdateGroupRoleOverridesRequest>,
 ) -> ApiResponse<UpdateGroupRoleOverridesResponse> {
   let Ok(client) = IdentityClient::from_client_id(&state.pool, client_id).await else {
     return ApiResponse::Err(ApiErr::UnknownClient);
@@ -237,13 +253,15 @@ pub async fn update_group_role_overrides(
     &state.pool,
     client.client_id.clone(),
     payload.group_role_overrides.clone(),
-  ).await else {
+  )
+  .await
+  else {
     return ApiResponse::Err(ApiErr::InternalServerError);
   };
 
-  ApiResponse::Ok(UpdateGroupRoleOverridesResponse { 
+  ApiResponse::Ok(UpdateGroupRoleOverridesResponse {
     client,
-    group_permission_overrides: payload.group_role_overrides
+    group_permission_overrides: payload.group_role_overrides,
   })
 }
 
@@ -251,7 +269,7 @@ pub async fn update_user_permission_override(
   State(state): State<AppState>,
   _: AdminCtx,
   Path((client_id, user_id)): Path<(String, i32)>,
-  Json(payload): Json<UpdateUserPermissionOverrideRequest>
+  Json(payload): Json<UpdateUserPermissionOverrideRequest>,
 ) -> ApiResponse<EmptyResponse> {
   let Ok(client) = IdentityClient::from_client_id(&state.pool, client_id).await else {
     return ApiResponse::Err(ApiErr::UnknownClient);
@@ -260,12 +278,15 @@ pub async fn update_user_permission_override(
   let permission_override = UserPermissionOverride {
     client_id: client.client_id.clone(),
     user_id,
-    granted: payload.granted
+    granted: payload.granted,
   };
 
-  match permission_override.upsert_permission_override(&state.pool).await {
+  match permission_override
+    .upsert_permission_override(&state.pool)
+    .await
+  {
     Ok(_) => ApiResponse::EmptyOk,
-    Err(_) => ApiResponse::Err(ApiErr::InternalServerError)
+    Err(_) => ApiResponse::Err(ApiErr::InternalServerError),
   }
 }
 
@@ -273,7 +294,7 @@ pub async fn update_user_role_override(
   State(state): State<AppState>,
   _: AdminCtx,
   Path((client_id, user_id, role)): Path<(String, i32, String)>,
-  Json(payload): Json<UpdateUserRoleOverrideRequest>
+  Json(payload): Json<UpdateUserRoleOverrideRequest>,
 ) -> ApiResponse<EmptyResponse> {
   let Ok(client) = IdentityClient::from_client_id(&state.pool, client_id).await else {
     return ApiResponse::Err(ApiErr::UnknownClient);
@@ -283,34 +304,36 @@ pub async fn update_user_role_override(
     client_id: client.client_id.clone(),
     user_id,
     granted: payload.granted,
-    role
+    role,
   };
 
   match role_override.upsert_user_role_override(&state.pool).await {
     Ok(_) => ApiResponse::EmptyOk,
-    Err(_) => ApiResponse::Err(ApiErr::InternalServerError)
+    Err(_) => ApiResponse::Err(ApiErr::InternalServerError),
   }
 }
 
 pub async fn delete_user_permission_override(
   State(state): State<AppState>,
   _: AdminCtx,
-  Path((client_id, user_id)): Path<(String, i32)>
+  Path((client_id, user_id)): Path<(String, i32)>,
 ) -> ApiResponse<EmptyResponse> {
   let Ok(client) = IdentityClient::from_client_id(&state.pool, client_id).await else {
     return ApiResponse::Err(ApiErr::UnknownClient);
   };
 
-  match UserPermissionOverride::remove_permission_override(&state.pool, user_id, client.client_id).await {
+  match UserPermissionOverride::remove_permission_override(&state.pool, user_id, client.client_id)
+    .await
+  {
     Ok(_) => ApiResponse::EmptyOk,
-    Err(_) => ApiResponse::Err(ApiErr::InternalServerError)
+    Err(_) => ApiResponse::Err(ApiErr::InternalServerError),
   }
 }
 
 pub async fn delete_user_role_override(
   State(state): State<AppState>,
   _: AdminCtx,
-  Path((client_id, user_id, role)): Path<(String, i32, String)>
+  Path((client_id, user_id, role)): Path<(String, i32, String)>,
 ) -> ApiResponse<EmptyResponse> {
   let Ok(client) = IdentityClient::from_client_id(&state.pool, client_id).await else {
     return ApiResponse::Err(ApiErr::UnknownClient);
@@ -320,12 +343,12 @@ pub async fn delete_user_role_override(
     user_id,
     client_id: client.client_id.clone(),
     role,
-    granted: false
+    granted: false,
   };
 
   match fake_override.remove_override(&state.pool).await {
     Ok(_) => ApiResponse::EmptyOk,
-    Err(_) => ApiResponse::Err(ApiErr::InternalServerError)
+    Err(_) => ApiResponse::Err(ApiErr::InternalServerError),
   }
 }
 

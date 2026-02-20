@@ -13,7 +13,8 @@ use crate::{
   AppState,
   auth::{identity::IdentityAccessClaims, register::RegistrationClaims},
   group::IdentityGroup,
-  response::{ApiErr, ApiResponse, EmptyResponse}, smtp::{new_registration_message, send_mail},
+  response::{ApiErr, ApiResponse, EmptyResponse},
+  smtp::{new_registration_message, send_mail},
 };
 
 pub mod routes;
@@ -125,7 +126,11 @@ impl User {
     let claims = RegistrationClaims::new(self);
     let token = claims.to_token(state);
     // TODO: use webauthn instead of OIDC issuer uri
-    let registration_link = format!("{}/auth/register/passkey?t={}", state.oidc_issuer_uri.clone(), token);
+    let registration_link = format!(
+      "{}/auth/register/passkey?t={}",
+      state.oidc_issuer_uri.clone(),
+      token
+    );
     let registration_url = Url::parse(&registration_link)?;
     let origin = registration_url.host().unwrap();
 

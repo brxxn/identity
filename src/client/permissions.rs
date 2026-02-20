@@ -50,7 +50,11 @@ impl UserPermissionOverride {
     Ok(())
   }
 
-  pub async fn remove_permission_override(pool: &PgPool, user_id: i32, client_id: String) -> Result<(), Box<dyn Error>> {
+  pub async fn remove_permission_override(
+    pool: &PgPool,
+    user_id: i32,
+    client_id: String,
+  ) -> Result<(), Box<dyn Error>> {
     sqlx::query!(
       r#"
         DELETE FROM user_app_permission_override WHERE user_id = $1 AND client_id = $2
@@ -65,7 +69,7 @@ impl UserPermissionOverride {
 
   pub async fn get_overrides_for_client(
     pool: &PgPool,
-    client_id: String
+    client_id: String,
   ) -> Result<Vec<Self>, Box<dyn Error>> {
     let permission_overrides = sqlx::query_as!(
       UserPermissionOverride,
@@ -73,7 +77,9 @@ impl UserPermissionOverride {
         SELECT user_id, client_id, granted FROM user_app_permission_override WHERE client_id = $1
       "#,
       client_id
-    ).fetch_all(pool).await?;
+    )
+    .fetch_all(pool)
+    .await?;
     Ok(permission_overrides)
   }
 }
@@ -108,7 +114,11 @@ impl GroupPermissionOverride {
     Ok(())
   }
 
-  pub async fn remove_permission_override(pool: &PgPool, group_id: i32, client_id: String) -> Result<(), Box<dyn Error>> {
+  pub async fn remove_permission_override(
+    pool: &PgPool,
+    group_id: i32,
+    client_id: String,
+  ) -> Result<(), Box<dyn Error>> {
     sqlx::query!(
       r#"
         DELETE FROM group_app_permission_override WHERE group_id = $1 AND client_id = $2

@@ -122,10 +122,9 @@ impl ApiErr {
         "username_exists",
         "This email is already in use by another user.",
       ),
-      ApiErr::AppDisabled => error_msg(
-        "app_disabled",
-        "Sorry, but this app is currently disabled."
-      ),
+      ApiErr::AppDisabled => {
+        error_msg("app_disabled", "Sorry, but this app is currently disabled.")
+      }
       ApiErr::ManagedObject => error_msg(
         "managed_object",
         "You can't do that because doing so may cause issues with the identity server.",
@@ -136,11 +135,17 @@ impl ApiErr {
       ApiErr::AdminRequired => error_msg("admin_required", "You don't have permission to do that."),
       ApiErr::OauthAclDenied(name) => ErrorMessage {
         code: "oauth_acl_denied".to_string(),
-        message: format!("You cannot access {} because you are failing the ACL checks to use this service. An administrator may need to add you to an identity group or grant you permission to use this app.", name)
+        message: format!(
+          "You cannot access {} because you are failing the ACL checks to use this service. An administrator may need to add you to an identity group or grant you permission to use this app.",
+          name
+        ),
       },
       ApiErr::InvalidRedirectUri(redirect_uri) => ErrorMessage {
         code: "invalid_redirect_uri".to_string(),
-        message: format!("The redirect_uri {} is not valid. Check that it exactly matches one of the added URIs for this app and is a compliant OAuth redirect URI.", redirect_uri)
+        message: format!(
+          "The redirect_uri {} is not valid. Check that it exactly matches one of the added URIs for this app and is a compliant OAuth redirect URI.",
+          redirect_uri
+        ),
       },
       ApiErr::Other(code, message) => ErrorMessage { code, message },
       _ => error_msg("unknown_error", "An error occurred."),

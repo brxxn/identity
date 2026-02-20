@@ -71,7 +71,7 @@ pub async fn openid_configuration(State(state): State<AppState>) -> Json<Wellkno
     subject_types_supported: vec!["pairwise", "public"],
     id_token_signing_alg_values_supported: vec!["RS256"],
     userinfo_signing_alg_values_supported: vec!["RS256"],
-    token_endpoint_auth_methods_supported: vec!["client_secret_post", "client_secret_basic"]
+    token_endpoint_auth_methods_supported: vec!["client_secret_post", "client_secret_basic"],
   })
 }
 

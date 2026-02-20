@@ -23,29 +23,25 @@ macro_rules! html_template {
   ($name:expr) => {
     MessageTemplate {
       text: include_str!(concat!("../mail-templates/", $name, ".txt")).to_string(),
-      html: Some(include_str!(concat!("../mail-templates/", $name, ".html")).to_string())
+      html: Some(include_str!(concat!("../mail-templates/", $name, ".html")).to_string()),
     }
   };
 }
 
-fn replace_body(
-  body: String,
-  variable_name: &str,
-  variable_value: &String
-) -> String {
-  body.replace(&format!("{{{{{}}}}}", variable_name), variable_value.as_str())
+fn replace_body(body: String, variable_name: &str, variable_value: &String) -> String {
+  body.replace(
+    &format!("{{{{{}}}}}", variable_name),
+    variable_value.as_str(),
+  )
 }
 
-fn complete_template(
-  template: &mut MessageTemplate,
-  variables: &HashMap<&str, String>
-) {
+fn complete_template(template: &mut MessageTemplate, variables: &HashMap<&str, String>) {
   for (name, val) in variables {
     template.text = replace_body(template.text.clone(), *name, val);
     match template.html.clone() {
       Some(html_body) => {
         template.html = Some(replace_body(html_body, *name, val));
-      },
+      }
       None => {}
     };
   }
@@ -54,14 +50,14 @@ fn complete_template(
 pub fn new_registration_message(
   user: &User,
   registration_link: String,
-  origin: String
+  origin: String,
 ) -> MailMessage {
   let mut variables = HashMap::new();
   variables.insert("name", user.name.clone());
   variables.insert("username", user.username.clone());
   variables.insert("email", user.email.clone());
   variables.insert("origin", origin.clone());
-  variables.insert("registration_link",registration_link);
+  variables.insert("registration_link", registration_link);
 
   let mut template = html_template!("register-account");
   complete_template(&mut template, &variables);
@@ -70,7 +66,7 @@ pub fn new_registration_message(
     to: user.email.clone(),
     subject: format!("Setup your account on {}", origin),
     body: template.text,
-    body_html: template.html
+    body_html: template.html,
   }
 }
 

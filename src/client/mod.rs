@@ -197,7 +197,7 @@ pub fn router() -> Router<AppState> {
     )
     .route(
       "/v1/clients/{client_id}",
-      get(routes::get_client_detailed).patch(routes::update_client)
+      get(routes::get_client_detailed).patch(routes::update_client),
     )
     .route(
       "/v1/clients/{client_id}/rotate-secret",
@@ -205,18 +205,19 @@ pub fn router() -> Router<AppState> {
     )
     .route(
       "/v1/clients/{client_id}/group-overrides/permissions",
-      patch(routes::update_group_permission_overrides)
+      patch(routes::update_group_permission_overrides),
     )
     .route(
       "/v1/clients/{client_id}/group-overrides/roles",
-      patch(routes::update_group_role_overrides)
+      patch(routes::update_group_role_overrides),
     )
     .route(
       "/v1/clients/{client_id}/user-overrides/{user_id}/permission",
-      patch(routes::update_user_permission_override).delete(routes::delete_user_permission_override)
+      patch(routes::update_user_permission_override)
+        .delete(routes::delete_user_permission_override),
     )
     .route(
       "/v1/clients/{client_id}/user-overrides/{user_id}/roles/{role}",
-      patch(routes::update_user_role_override).delete(routes::delete_user_role_override)
+      patch(routes::update_user_role_override).delete(routes::delete_user_role_override),
     )
 }

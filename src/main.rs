@@ -16,8 +16,8 @@ pub mod frontend;
 pub mod group;
 pub mod keys;
 pub mod middleware;
-pub mod response;
 pub mod oauth;
+pub mod response;
 pub mod smtp;
 pub mod user;
 pub mod util;
@@ -162,7 +162,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     webauthn,
     mailer,
     oidc_issuer_uri,
-    redis_connection
+    redis_connection,
   };
 
   let cors_origin = extract_from_env("CORS_ORIGIN", "");

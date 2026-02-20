@@ -65,7 +65,7 @@ impl RegistrationClaims {
       exp: iat + 86400,
       email: user.email.clone(),
       username: user.username.clone(),
-      name: user.name.clone()
+      name: user.name.clone(),
     }
   }
 

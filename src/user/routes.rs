@@ -139,7 +139,7 @@ pub async fn send_registration_link_to_user(
 
   match user.send_registration_mail(&state).await {
     Ok(_) => ApiResponse::EmptyOk,
-    Err(_) => ApiResponse::Err(ApiErr::InternalServerError)
+    Err(_) => ApiResponse::Err(ApiErr::InternalServerError),
   }
 }
 
@@ -157,5 +157,8 @@ pub async fn get_current_user_groups(
     return ApiResponse::Err(ApiErr::InternalServerError);
   };
 
-  ApiResponse::Ok(GetUserResponse { user: current_user, groups })
+  ApiResponse::Ok(GetUserResponse {
+    user: current_user,
+    groups,
+  })
 }
