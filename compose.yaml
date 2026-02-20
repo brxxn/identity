@@ -4,7 +4,7 @@ services:
     networks:
       - backend
     volumes:
-      - ./env/valkey:/data
+      - ${IDENTITY_DATA_DIR:-./env}/valkey:/data
   postgres:
     image: postgres:18.1-alpine
     restart: unless-stopped
@@ -17,7 +17,7 @@ services:
     networks:
       - backend
     volumes:
-      - ./env/postgres:/var/lib/postgresql/18/docker
+      - ${IDENTITY_DATA_DIR:-./env}/postgres:/var/lib/postgresql/18/docker
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
@@ -40,7 +40,7 @@ services:
     networks:
       - backend
     volumes:
-      - ./keys:/keys
+      - ${IDENTITY_KEY_DIR:-./keys}:/keys
       - ./frontend:/frontend:ro
   
 networks:
