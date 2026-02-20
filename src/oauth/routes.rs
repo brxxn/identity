@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
 use axum::{Form, Json, extract::State, response::{IntoResponse, Response}};
-use axum_auth::{AuthBasic, AuthBearer};
+use axum_auth::{AuthBearer};
 use http::{HeaderMap, StatusCode};
 use serde::{Deserialize, Serialize};
 use webauthn_rs::prelude::Url;
 
-use crate::{AppState, client::IdentityClient, group::IdentityGroup, oauth::{authorization::UserAppAuthorization, code::OauthCodeData, create_id_token, token::{OauthAccessTokenData, OauthRefreshTokenData}}, response::{ApiErr, ApiResponse}, user::User};
+use crate::{AppState, client::IdentityClient, group::IdentityGroup, oauth::{authorization::UserAppAuthorization, code::OauthCodeData, create_id_token, token::{OauthAccessTokenData, OauthRefreshTokenData}}, response::{ApiErr, ApiResponse}, user::User, util::get_basic_auth_from_header};
 
 #[derive(Clone, Deserialize)]
 pub struct OauthAuthorizeRequest {
@@ -24,6 +24,9 @@ pub struct OauthTokenRequest {
   pub grant_type: String,
   pub code: Option<String>,
   pub redirect_uri: String,
+  pub client_id: Option<String>,
+  pub client_secret: Option<String>,
+
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -244,14 +247,32 @@ pub async fn oauth_authorize_approve(
 
 pub async fn oauth_token(
   State(state): State<AppState>,
-  AuthBasic((client_id, client_secret_opt)): AuthBasic,
+  headers: HeaderMap,
   Form(payload): Form<OauthTokenRequest>
 ) -> Response {
-  let Some(client_secret) = client_secret_opt else {
-    return (StatusCode::BAD_REQUEST, Json(get_oauth_error(
-      "invalid_request",
-      "Basic authentication must be used to provide client_id and client_secret"
-    ))).into_response();
+  let (client_id, client_secret) = match get_basic_auth_from_header(&headers) {
+    Some((client_id, client_secret)) => (client_id, client_secret),
+    None => {
+      match payload.client_id {
+        Some(client_id) => match payload.client_secret {
+          Some(client_secret) => {
+            (client_id, client_secret)
+          },
+          None => {
+            return (StatusCode::BAD_REQUEST, Json(get_oauth_error(
+              "invalid_request",
+              "client_secret is required (PKCE authentication is not yet implemented)."
+            ))).into_response();
+          }
+        },
+        None => {
+          return (StatusCode::BAD_REQUEST, Json(get_oauth_error(
+            "invalid_request",
+            "client_id must be provided"
+          ))).into_response();
+        }
+      }
+    }
   };
 
   let Ok(client) = IdentityClient::from_client_id(&state.pool, client_id).await else {
@@ -316,6 +337,17 @@ pub async fn oauth_token(
           "Something went wrong!"
         ))).into_response();
       };
+
+      let Ok(user_permission) = client.is_user_allowed(&state.pool, &user, &groups).await else {
+        return (StatusCode::INTERNAL_SERVER_ERROR, Json(get_oauth_error(
+          "internal_server_error",
+          "Something went wrong!"
+        ))).into_response();
+      };
+
+      if !user_permission {
+        return code_not_valid;
+      }
 
       let Ok(id_token) = create_id_token(&state, &user, &client, groups, code_data.nonce.clone(), &user_app_auth).await else {
         return (StatusCode::INTERNAL_SERVER_ERROR, Json(get_oauth_error(
@@ -404,6 +436,14 @@ pub async fn oauth_userinfo(
   let Ok(groups) = user.get_groups(&state.pool).await else {
     return (StatusCode::UNAUTHORIZED, invalid_token_headers).into_response();
   };
+
+  let Ok(user_permission) = client.is_user_allowed(&state.pool, &user, &groups).await else {
+    return StatusCode::INTERNAL_SERVER_ERROR.into_response();
+  };
+
+  if !user_permission {
+    return (StatusCode::UNAUTHORIZED, invalid_token_headers).into_response();
+  }
 
   let Ok(id_token) = create_id_token(&state, &user, &client, groups, access_token_data.nonce.clone(), &user_app_auth).await else {
     return (StatusCode::UNAUTHORIZED, invalid_token_headers).into_response();

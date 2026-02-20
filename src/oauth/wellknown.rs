@@ -21,7 +21,8 @@ pub struct WellknownClaim {
   pub response_modes_supported: Vec<&'static str>,
   pub subject_types_supported: Vec<&'static str>,
   pub id_token_signing_alg_values_supported: Vec<&'static str>,
-  pub userinfo_signing_alg_values_supported: Vec<&'static str>
+  pub userinfo_signing_alg_values_supported: Vec<&'static str>,
+  pub token_endpoint_auth_methods_supported: Vec<&'static str>,
 }
 
 fn add_to_issuer(issuer: &String, path: &str) -> String {
@@ -70,6 +71,7 @@ pub async fn openid_configuration(State(state): State<AppState>) -> Json<Wellkno
     subject_types_supported: vec!["pairwise", "public"],
     id_token_signing_alg_values_supported: vec!["RS256"],
     userinfo_signing_alg_values_supported: vec!["RS256"],
+    token_endpoint_auth_methods_supported: vec!["client_secret_post", "client_secret_basic"]
   })
 }
 
