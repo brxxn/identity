@@ -4,6 +4,7 @@ use lettre::{
   AsyncTransport, Message,
   message::{MultiPart, SinglePart, header},
 };
+use tokio::task::JoinHandle;
 
 use crate::{AppState, user::User};
 
@@ -70,10 +71,10 @@ pub fn new_registration_message(
   }
 }
 
-pub async fn send_mail(state: &AppState, message: MailMessage) -> Result<(), Box<dyn Error>> {
+pub async fn send_mail(state: &AppState, message: MailMessage) -> Result<Option<JoinHandle<()>>, Box<dyn Error>> {
   let Some(mailer) = &state.mailer else {
     tracing::info!("Mailing skipped due to SMTP being disabled!");
-    return Ok(());
+    return Ok(None);
   };
   let cloned_mailer = mailer.clone();
 
@@ -102,7 +103,7 @@ pub async fn send_mail(state: &AppState, message: MailMessage) -> Result<(), Box
       .body(message.body)?,
   };
 
-  tokio::spawn(async move {
+  Ok(Some(tokio::spawn(async move {
     tracing::info!("Sending mail to {}", message.to);
     match cloned_mailer.transport.send(email).await {
       Ok(_) => {
@@ -112,6 +113,5 @@ pub async fn send_mail(state: &AppState, message: MailMessage) -> Result<(), Box
         tracing::error!("Error while sending email: {}", e.to_string())
       }
     }
-  });
-  Ok(())
+  })))
 }

@@ -8,10 +8,11 @@ use rsa::RsaPrivateKey;
 use sqlx::postgres::PgPoolOptions;
 use webauthn_rs::{Webauthn, WebauthnBuilder, prelude::Url};
 
-use crate::keys::load_keys;
+use crate::{cli::{handle_email_cli, handle_setup_cli}, keys::load_keys};
 
 pub mod auth;
 pub mod client;
+pub mod cli;
 pub mod frontend;
 pub mod group;
 pub mod keys;
@@ -164,6 +165,26 @@ async fn main() -> Result<(), Box<dyn Error>> {
     oidc_issuer_uri,
     redis_connection,
   };
+
+  let cli_args: Vec<String> = env::args().collect();
+  if cli_args.len() == 0 {
+    panic!("No command line arguments provided! Valid options: serve, setup, send-login-link");
+  }
+
+  match cli_args[1].as_str() {
+    "serve" => { /* fallthrough */},
+    "setup" => {
+      handle_setup_cli(&state).await;
+      return Ok(());
+    },
+    "get-login-link" => {
+      handle_email_cli(&state).await;
+      return Ok(());
+    }
+    _ => {
+      panic!("Invalid command line arguments! Valid options: serve, setup, send-login-link");
+    }
+  }
 
   let cors_origin = extract_from_env("CORS_ORIGIN", "");
   let cors = if cors_origin.is_empty() {

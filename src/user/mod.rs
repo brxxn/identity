@@ -7,6 +7,7 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
+use tokio::task::JoinHandle;
 use webauthn_rs::prelude::Url;
 
 use crate::{
@@ -58,6 +59,17 @@ impl User {
         SELECT id, email, username, name, is_suspended, credential_uuid, is_admin FROM users WHERE id = $1
       "#,
       user_id
+    ).fetch_one(pool).await?;
+    Ok(user)
+  }
+
+  pub async fn from_username(pool: &PgPool, username: String) -> Result<User, Box<dyn Error>> {
+    let user = sqlx::query_as!(
+      User,
+      r#"
+        SELECT id, email, username, name, is_suspended, credential_uuid, is_admin FROM users WHERE username = $1
+      "#,
+      username
     ).fetch_one(pool).await?;
     Ok(user)
   }
@@ -122,15 +134,19 @@ impl User {
     Ok(results)
   }
 
-  pub async fn send_registration_mail(&self, state: &AppState) -> Result<(), Box<dyn Error>> {
+  pub fn get_registration_link(&self, state: &AppState) -> String {
     let claims = RegistrationClaims::new(self);
     let token = claims.to_token(state);
     // TODO: use webauthn instead of OIDC issuer uri
-    let registration_link = format!(
+    format!(
       "{}/auth/register/passkey?t={}",
       state.oidc_issuer_uri.clone(),
       token
-    );
+    )
+  }
+
+  pub async fn send_registration_mail(&self, state: &AppState) -> Result<Option<JoinHandle<()>>, Box<dyn Error>> {
+    let registration_link = self.get_registration_link(state);
     let registration_url = Url::parse(&registration_link)?;
     let origin = registration_url.host().unwrap();
 
